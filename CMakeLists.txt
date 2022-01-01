@@ -148,19 +148,12 @@ auto_sources(hfiles "*.h" "RECURSE" "${FOLLY_DIR}")
 # library sources.  Test sources are listed separately below.
 REMOVE_MATCHES_FROM_LISTS(files hfiles
   MATCHES
-    "^${FOLLY_DIR}/experimental/"
     "^${FOLLY_DIR}/build/"
     "^${FOLLY_DIR}/logging/example/"
     "^${FOLLY_DIR}/(.*/)?test/"
     "^${FOLLY_DIR}/tools/"
     "Benchmark.cpp$"
     "Test.cpp$"
-)
-
-# Do not include experimental files
-REMOVE_MATCHES_FROM_LISTS(files hfiles
-  MATCHES
-    "^${FOLLY_DIR}/experimental/"
 )
 
 list(REMOVE_ITEM files
