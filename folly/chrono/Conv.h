@@ -289,7 +289,7 @@ struct CheckOverflowToDuration {
 
       auto unsignedSeconds = to_unsigned(seconds);
       if (LIKELY(unsignedSeconds < maxSeconds)) {
-        return ConversionCode::SUCCESS;
+        return ConversionCode::FOLLY_SUCCESS;
       }
 
       if (UNLIKELY(unsignedSeconds == maxSeconds)) {
@@ -298,10 +298,10 @@ struct CheckOverflowToDuration {
         constexpr auto maxSubseconds =
             (maxRemainder * SubsecondRatio::den) / Tgt::period::den;
         if (subseconds <= 0) {
-          return ConversionCode::SUCCESS;
+          return ConversionCode::FOLLY_SUCCESS;
         }
         if (to_unsigned(subseconds) <= maxSubseconds) {
-          return ConversionCode::SUCCESS;
+          return ConversionCode::FOLLY_SUCCESS;
         }
       }
       return ConversionCode::POSITIVE_OVERFLOW;
@@ -312,7 +312,7 @@ struct CheckOverflowToDuration {
           to_signed(std::numeric_limits<typename Tgt::rep>::lowest());
       constexpr auto minSeconds = (minCount / Tgt::period::den);
       if (LIKELY(seconds >= minSeconds)) {
-        return ConversionCode::SUCCESS;
+        return ConversionCode::FOLLY_SUCCESS;
       }
 
       if (UNLIKELY(seconds == minSeconds - 1)) {
@@ -324,7 +324,7 @@ struct CheckOverflowToDuration {
           return ConversionCode::NEGATIVE_OVERFLOW;
         }
         if (subseconds >= maxSubseconds) {
-          return ConversionCode::SUCCESS;
+          return ConversionCode::FOLLY_SUCCESS;
         }
       }
       return ConversionCode::NEGATIVE_OVERFLOW;
@@ -358,7 +358,7 @@ struct CheckOverflowToDuration<true> {
             std::numeric_limits<Seconds>::lowest(),
         "unusually limited floating point type");
 
-    return ConversionCode::SUCCESS;
+    return ConversionCode::FOLLY_SUCCESS;
   }
 };
 
@@ -437,7 +437,7 @@ auto posixTimeToDuration(
   auto errorCode = detail::CheckOverflowToDuration<
       std::is_floating_point<typename Tgt::rep>::value>::
       template check<Tgt, SubsecondRatio>(seconds, subseconds);
-  if (errorCode != ConversionCode::SUCCESS) {
+  if (errorCode != ConversionCode::FOLLY_SUCCESS) {
     return makeUnexpected(errorCode);
   }
 

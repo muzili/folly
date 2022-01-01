@@ -131,7 +131,7 @@ namespace folly {
 
 // Keep this in sync with kErrorStrings in Conv.cpp
 enum class ConversionCode : unsigned char {
-  SUCCESS,
+  FOLLY_SUCCESS,
   EMPTY_INPUT_STRING,
   NO_DIGITS,
   BOOL_OVERFLOW,
@@ -199,7 +199,7 @@ inline ConversionCode enforceWhitespaceErr(StringPiece sp) {
       return ConversionCode::NON_WHITESPACE_AFTER_END;
     }
   }
-  return ConversionCode::SUCCESS;
+  return ConversionCode::FOLLY_SUCCESS;
 }
 
 /**
@@ -207,7 +207,7 @@ inline ConversionCode enforceWhitespaceErr(StringPiece sp) {
  */
 inline void enforceWhitespace(StringPiece sp) {
   auto err = enforceWhitespaceErr(sp);
-  if (err != ConversionCode::SUCCESS) {
+  if (err != ConversionCode::FOLLY_SUCCESS) {
     throw_exception(makeConversionError(err, sp));
   }
 }
@@ -1388,7 +1388,7 @@ using ParseToResult = decltype(parseTo(StringPiece{}, std::declval<Tgt&>()));
 struct CheckTrailingSpace {
   Expected<Unit, ConversionCode> operator()(StringPiece sp) const {
     auto e = enforceWhitespaceErr(sp);
-    if (UNLIKELY(e != ConversionCode::SUCCESS)) {
+    if (UNLIKELY(e != ConversionCode::FOLLY_SUCCESS)) {
       return makeUnexpected(e);
     }
     return unit;

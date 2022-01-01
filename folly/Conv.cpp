@@ -482,7 +482,7 @@ class SignedValueHandler<T, true> {
       }
       ++b;
     }
-    return ConversionCode::SUCCESS;
+    return ConversionCode::FOLLY_SUCCESS;
   }
 
   ConversionCode overflow() {
@@ -522,7 +522,7 @@ class SignedValueHandler<T, true> {
 template <typename T>
 class SignedValueHandler<T, false> {
  public:
-  ConversionCode init(const char*&) { return ConversionCode::SUCCESS; }
+  ConversionCode init(const char*&) { return ConversionCode::FOLLY_SUCCESS; }
 
   ConversionCode overflow() { return ConversionCode::POSITIVE_OVERFLOW; }
 
@@ -545,7 +545,7 @@ inline Expected<Tgt, ConversionCode> digits_to(
   SignedValueHandler<Tgt> sgn;
 
   auto err = sgn.init(b);
-  if (UNLIKELY(err != ConversionCode::SUCCESS)) {
+  if (UNLIKELY(err != ConversionCode::FOLLY_SUCCESS)) {
     return makeUnexpected(err);
   }
 
@@ -692,7 +692,7 @@ Expected<Tgt, ConversionCode> str_to_integral(StringPiece* src) noexcept {
   SignedValueHandler<Tgt> sgn;
   auto err = sgn.init(b);
 
-  if (UNLIKELY(err != ConversionCode::SUCCESS)) {
+  if (UNLIKELY(err != ConversionCode::FOLLY_SUCCESS)) {
     return makeUnexpected(err);
   }
   if (is_signed_v<Tgt> && UNLIKELY(b >= past)) {
