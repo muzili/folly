@@ -45,6 +45,7 @@ find_package(Boost 1.51.0 MODULE
     thread
   REQUIRED
 )
+message("FIND BOOST ${Boost_INCLUDE_DIRS}")
 list(APPEND FOLLY_LINK_LIBRARIES ${Boost_LIBRARIES})
 list(APPEND FOLLY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 
@@ -302,12 +303,17 @@ endif()
 
 add_library(folly_deps INTERFACE)
 
-find_package(fmt CONFIG)
-if (NOT DEFINED fmt_CONFIG)
-    # Fallback on a normal search on the current system
-    find_package(Fmt MODULE REQUIRED)
+if (LIBFMT_FOUND)
+    list(APPEND FOLLY_LINK_LIBRARIES ${LIBFMT_LIBRARY})
+    list(APPEND FOLLY_INCLUDE_DIRECTORIES ${LIBFMT_INCLUDE_DIR})
+else()
+  find_package(fmt CONFIG)
+  if (NOT DEFINED fmt_CONFIG)
+      # Fallback on a normal search on the current system
+      find_package(Fmt MODULE REQUIRED)
+  endif()
+  target_link_libraries(folly_deps INTERFACE fmt::fmt)
 endif()
-target_link_libraries(folly_deps INTERFACE fmt::fmt)
 
 list(REMOVE_DUPLICATES FOLLY_INCLUDE_DIRECTORIES)
 target_include_directories(folly_deps INTERFACE ${FOLLY_INCLUDE_DIRECTORIES})

@@ -28,11 +28,11 @@
 //  The headers <libiberty.h> (binutils) and <string.h> (glibc) both declare the
 //  symbol basename. Unfortunately, the declarations are different. So including
 //  both headers in the same translation unit fails due to the two conflicting
-//  declarations. Since <demangle.h> includes <libiberty.h> we must be careful.
-#if __has_include(<demangle.h>)
+//  declarations. Since <libiberty/demangle.h> includes <libiberty.h> we must be careful.
+#if __has_include(<libiberty/demangle.h>)
 #pragma push_macro("HAVE_DECL_BASENAME")
 #define HAVE_DECL_BASENAME 1
-#include <demangle.h> // @manual
+#include <libiberty/demangle.h> // @manual
 #pragma pop_macro("HAVE_DECL_BASENAME")
 #endif
 
@@ -58,7 +58,7 @@ static constexpr auto cxxabi_demangle = static_cast<char* (*)(...)>(nullptr);
 //
 //  in contrast with cxxabi, where there are certainly other referenced symbols
 
-#if __has_include(<demangle.h>)
+#if __has_include(<libiberty/demangle.h>)
 
 static constexpr auto liberty_demangle = cplus_demangle_v3_callback;
 
@@ -73,12 +73,12 @@ static constexpr auto liberty_demangle_options = //
     DMGL_PARAMS | DMGL_ANSI | DMGL_TYPES | //
     liberty_demangle_options_no_recurse_limit;
 
-#else // __has_include(<demangle.h>)
+#else // __has_include(<libiberty/demangle.h>)
 
 static constexpr auto liberty_demangle = static_cast<int (*)(...)>(nullptr);
 static constexpr auto liberty_demangle_options = 0;
 
-#endif // __has_include(<demangle.h>)
+#endif // __has_include(<libiberty/demangle.h>)
 
 //  implementations
 
