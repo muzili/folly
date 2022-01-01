@@ -16,13 +16,7 @@
 
 #pragma once
 
-#if __has_include(<filesystem>)
-#include <filesystem>
-#elif __has_include(<experimental/filesystem>)
-#include <experimental/filesystem>
-#else
-#error require filesystem
-#endif
+#include <boost/filesystem.hpp>
 
 namespace folly::fs {
 
@@ -31,20 +25,8 @@ enum class which_enum {
   std_experimental = 2,
 };
 
-#if __cpp_lib_filesystem >= 201703
-
-namespace std_fs = std::filesystem;
+namespace std_fs = boost::filesystem;
 inline constexpr which_enum which = which_enum::std;
-
-#elif __cpp_lib_experimental_filesystem >= 201406
-
-namespace std_fs = std::experimental::filesystem;
-inline constexpr which_enum which = which_enum::std_experimental;
-
-#else
-#error require filesystem
-#endif
-
 //  imports
 
 using std_fs::absolute;
@@ -66,18 +48,13 @@ using std_fs::equivalent;
 using std_fs::exists;
 using std_fs::file_size;
 using std_fs::file_status;
-using std_fs::file_time_type;
 using std_fs::file_type;
 using std_fs::filesystem_error;
 using std_fs::hard_link_count;
-using std_fs::is_block_file;
-using std_fs::is_character_file;
 using std_fs::is_directory;
 using std_fs::is_empty;
-using std_fs::is_fifo;
 using std_fs::is_other;
 using std_fs::is_regular_file;
-using std_fs::is_socket;
 using std_fs::is_symlink;
 using std_fs::last_write_time;
 using std_fs::path;
@@ -95,16 +72,9 @@ using std_fs::status;
 using std_fs::status_known;
 using std_fs::symlink_status;
 using std_fs::temp_directory_path;
-using std_fs::u8path;
 
-#if __cpp_lib_filesystem >= 201703
-
-using std_fs::perm_options;
-using std_fs::proximate;
 using std_fs::relative;
 using std_fs::weakly_canonical;
-
-#endif
 
 struct lexically_normal_fn {
   path operator()(path const& p) const;
