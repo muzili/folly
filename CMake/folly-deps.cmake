@@ -45,7 +45,6 @@ find_package(Boost 1.51.0 MODULE
     thread
   REQUIRED
 )
-message("FIND BOOST ${Boost_INCLUDE_DIRS}")
 list(APPEND FOLLY_LINK_LIBRARIES ${Boost_LIBRARIES})
 list(APPEND FOLLY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 
@@ -53,7 +52,7 @@ find_package(DoubleConversion MODULE REQUIRED)
 list(APPEND FOLLY_LINK_LIBRARIES ${DOUBLE_CONVERSION_LIBRARY})
 list(APPEND FOLLY_INCLUDE_DIRECTORIES ${DOUBLE_CONVERSION_INCLUDE_DIR})
 
-#find_package(Gflags MODULE)
+find_package(Gflags MODULE)
 set(FOLLY_HAVE_LIBGFLAGS ${LIBGFLAGS_FOUND})
 if(LIBGFLAGS_FOUND)
   list(APPEND FOLLY_LINK_LIBRARIES ${LIBGFLAGS_LIBRARY})
@@ -62,7 +61,7 @@ if(LIBGFLAGS_FOUND)
   set(FOLLY_LIBGFLAGS_INCLUDE ${LIBGFLAGS_INCLUDE_DIR})
 endif()
 
-#find_package(Glog MODULE)
+find_package(Glog MODULE)
 set(FOLLY_HAVE_LIBGLOG ${GLOG_FOUND})
 list(APPEND FOLLY_LINK_LIBRARIES ${GLOG_LIBRARY})
 list(APPEND FOLLY_INCLUDE_DIRECTORIES ${GLOG_INCLUDE_DIR})
@@ -169,8 +168,6 @@ set(CMAKE_REQUIRED_DEFINITIONS -D_XOPEN_SOURCE)
 check_cxx_symbol_exists(swapcontext ucontext.h FOLLY_HAVE_SWAPCONTEXT)
 cmake_pop_check_state()
 
-option(WITH_SYMBOLIZER "Enable symbolizer or not" OFF)
-if (WITH_SYMBOLIZER)
 set(FOLLY_USE_SYMBOLIZER OFF)
 CHECK_INCLUDE_FILE_CXX(elf.h FOLLY_HAVE_ELF)
 find_package(Backtrace)
@@ -179,7 +176,6 @@ set(FOLLY_HAVE_BACKTRACE ${Backtrace_FOUND})
 set(FOLLY_HAVE_DWARF ${LIBDWARF_FOUND})
 if (NOT WIN32 AND NOT APPLE)
   set(FOLLY_USE_SYMBOLIZER ON)
-endif()
 endif()
 message(STATUS "Setting FOLLY_USE_SYMBOLIZER: ${FOLLY_USE_SYMBOLIZER}")
 message(STATUS "Setting FOLLY_HAVE_ELF: ${FOLLY_HAVE_ELF}")
@@ -294,16 +290,10 @@ endif()
 
 add_library(folly_deps INTERFACE)
 
-if (LIBFMT_FOUND)
-    list(APPEND FOLLY_LINK_LIBRARIES ${LIBFMT_LIBRARY})
-    list(APPEND FOLLY_INCLUDE_DIRECTORIES ${LIBFMT_INCLUDE_DIR})
-else()
-  find_package(fmt CONFIG)
-  if (NOT DEFINED fmt_CONFIG)
-      # Fallback on a normal search on the current system
-      find_package(Fmt MODULE REQUIRED)
-  endif()
-  target_link_libraries(folly_deps INTERFACE fmt::fmt)
+find_package(fmt CONFIG)
+if (NOT DEFINED fmt_CONFIG)
+    # Fallback on a normal search on the current system
+    find_package(Fmt MODULE REQUIRED)
 endif()
 
 list(REMOVE_DUPLICATES FOLLY_INCLUDE_DIRECTORIES)
